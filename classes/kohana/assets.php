@@ -98,6 +98,16 @@ abstract class Kohana_Assets {
 	protected $_groups = array();
 
 	/**
+	 * @var  array  Instance
+	 */
+	protected static $_instance = array();
+
+	/**
+	 * @var  array  already loaded assets
+	 */
+	private $_prevent_duplicate_content = array();
+
+	/**
 	 * Return a new Assets object
 	 *
 	 * @param   $name   string
@@ -107,6 +117,24 @@ abstract class Kohana_Assets {
 	{
 		return new Assets($name);
 	}
+
+	/**
+	 * Return a new Assets instance
+	 *
+	 * @param   $name   string
+	 * @return  Assets
+	 */
+	public static function instance($name)
+	{
+		if ( ! isset(Assets::$_instance[$location]))
+		{
+			Assets::$_instance[$location] = Assets::factory($location);
+		}
+
+		return Assets::$_instance[$location];
+	}
+
+
 
 	/**
 	 * Create the asset groups, set the file name and enable / disable process
@@ -269,38 +297,42 @@ abstract class Kohana_Assets {
 	 */
 	protected function add($class, $type, $file, array $options = array())
 	{
-		if (Valid::url($file))
+		if(! in_array($file, $this->_prevent_duplicate_content))
 		{
-			// Remote asset
-			$remote = Asset::html($type, $file);
-
-			if ($condition = Arr::get($options, 'condition'))
+			$this->_prevent_duplicate_content[] = $file;
+			if (Valid::url($file))
 			{
-				// Remote asset with conditions
-				$remote = Asset::conditional($remote, $condition);
-			}
+				// Remote asset
+				$remote = Asset::html($type, $file);
 
-			if ($type === Assets::JAVASCRIPT AND $fallback = Arr::get($options, 'fallback'))
+				if ($condition = Arr::get($options, 'condition'))
+				{
+					// Remote asset with conditions
+					$remote = Asset::conditional($remote, $condition);
+				}
+
+				if ($type === Assets::JAVASCRIPT AND $fallback = Arr::get($options, 'fallback'))
+				{
+					if ( ! is_array($fallback))
+						throw new Kohana_Exception("Fallback must be an array of 'check' and 'local path'. Check is evaluated to see if we need to include the local path");
+
+					// Remote asset with conditions
+					$remote = Asset::fallback($remote, $fallback[0], $fallback[1]);
+				}
+
+				// Add to remote
+				$this->_remote[] = $remote;
+			}
+			elseif (Arr::get($options, 'condition'))
 			{
-				if ( ! is_array($fallback))
-					throw new Kohana_Exception("Fallback must be an array of 'check' and 'local path'. Check is evaluated to see if we need to include the local path");
-
-				// Remote asset with conditions
-				$remote = Asset::fallback($remote, $fallback[0], $fallback[1]);
+				// Conditional asset, add to conditionals
+				$this->_conditional[] = new $class($type, $file, $options);
 			}
-
-			// Add to remote
-			$this->_remote[] = $remote;
-		}
-		elseif (Arr::get($options, 'condition'))
-		{
-			// Conditional asset, add to conditionals
-			$this->_conditional[] = new $class($type, $file, $options);
-		}
-		else
-		{
-			// Regular asset, add to groups
-			$this->_groups[$type][] = new $class($type, $file, $options);
+			else
+			{
+				// Regular asset, add to groups
+				$this->_groups[$type][] = new $class($type, $file, $options);
+			}
 		}
 
 		return $this;
@@ -353,5 +385,7 @@ abstract class Kohana_Assets {
 	{
 		return $this->add('Asset_Block', Assets::STYLESHEET, $css, $options);
 	}
+
+
 
 } // End Assets
