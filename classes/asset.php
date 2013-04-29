@@ -136,6 +136,30 @@ class Asset {
 				// Don't continue
 				break;
 			}
+			else
+			{
+				$modules_folder = opendir (MODPATH);
+
+				while ($modcontent = readdir($modules_folder))
+				{
+
+					if($modcontent != '.' AND $modcontent != '..' AND is_dir(MODPATH.$modcontent))
+					{
+						$modroot = MODPATH.$modcontent.DIRECTORY_SEPARATOR;
+
+						if(file_exists($modroot.'assets'.DIRECTORY_SEPARATOR.$file))
+						{
+								// Set the destination and source file
+								$this->destination_file = Assets::file_path($type, $file);
+								$this->source_file      = $modroot.'assets'.DIRECTORY_SEPARATOR.$file;
+
+								// Don't continue
+								//break;
+						}
+					}
+				}
+				closedir ($modules_folder);
+			}
 		}
 
 		if ( ! $this->source_file)
@@ -201,6 +225,13 @@ class Asset {
 	 */
 	public function render($process = FALSE)
 	{
+
+		if($this->type == 'css')
+		{
+			$this->destination_file = (substr($this->destination_file, -4) == '.css' ? $this->destination_file : $this->destination_file.'.css');
+			$this->destination_web = (substr($this->destination_web, -4) == '.css' ? $this->destination_web : $this->destination_web.'.css');
+		}
+
 		if ($this->needs_recompile())
 		{
 			// Recompile file
@@ -225,7 +256,10 @@ class Asset {
 	{
 		return $this->render();
 	}
-
+	public function type()
+	{
+		return $this->_type;
+	}
 	/**
 	 * Get and set the last modified time
 	 *
