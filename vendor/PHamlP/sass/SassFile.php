@@ -77,7 +77,7 @@ class SassFile {
 				return $_filename;
 			}
 
-			foreach (array_merge(array(dirname($parser->filename)), $parser->load_paths) as $loadPath) {
+			foreach (array_merge(array(dirname($parser->filename->dirname)), $parser->load_paths) as $loadPath) {
 				$path = self::findFile($_filename, realpath($loadPath));
 				if ($path !== false) {
 					return $path;
