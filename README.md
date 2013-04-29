@@ -1,3 +1,11 @@
+### Difference with the original Asset-Merger by Ivank
+
+- `Assets::instance('main')`, to be able to call the same instance from anywhere.
+- No more multiple load of one asset. Prevents duplicate content in CSS/JS.
+- Sass `@import`debuged and you can also import any sass file from anywhere in Kohana.
+- Improve Sass to CSS file name (`file.css` instead of `file`) to insure compatibility with all browsers.
+
+
 - [Asset Merger](#asset-merger)
 	- [Blog Post](#blog-post)
 	- [Virtual folders](#virtual-folders)
