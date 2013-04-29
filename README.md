@@ -5,6 +5,12 @@
 - Sass `@import`debuged and you can also import any sass file from anywhere in Kohana.
 - Improve Sass to CSS file name (`file.css` instead of `file`) to insure compatibility with all browsers.
 
+________
+
+
+Asset Merger
+============
+
 
 - [Asset Merger](#asset-merger)
 	- [Blog Post](#blog-post)
@@ -16,9 +22,6 @@
 	- [Processors](#processors)
 	- [Assets Class](#assets-class)
 	- [Extending](#extending)
-
-Asset Merger
-============
 
 Blog Post
 ---------
