@@ -1,5 +1,3 @@
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
 - [Asset Merger](#asset-merger)
 	- [Blog Post](#blog-post)
 	- [Virtual folders](#virtual-folders)
@@ -56,6 +54,23 @@ And this in Production:
 	<!--[IF gte IE 7]><link type="text/css" href="/assets/css/ie.css?1320227001" rel="stylesheet" /><![endif]-->
 ```
 
+With this fork, you can also call an instance of Assets to get the possibility to call the same instance everywhere in Kohana.
+
+``` php
+	<?php Assets::instance('main')
+		->css('site/homepage.css.less')
+		->css('main.css.less', array('processor' => 'cssmin')
+		->css('ie.css.less', array('condition' => 'gte IE 7')
+		->css('notifications.css')
+		->js("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js")
+		->js_block("window.asset_merger = true;")
+		->js("functions.js", "jsmin");
+
+		// Somewhere else in your (H)MVC
+		echo Assets::instance('main')->render();
+	?>
+```
+
 Virtual folders
 ---------------
 
@@ -77,7 +92,7 @@ It's a common practice to have conditional comments for CSS / JS files specifica
 		->css('ie.css.less', array('condition' => 'gte IE 7'))
 		->css('notifications.css')
 		->js_block("window.asset_merger = true;", array('condition' => 'gte IE 7'))
-		->js("functions.js", "jsmin")
+		->js("functions.js", "jsmin");
 	?>
 ```
 
@@ -91,7 +106,7 @@ Sometimes you need to have a local fallback to your external javascript file (fr
 		->css('site/homepage.css.less')
 		->js("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js", array(
 			'fallback' => array('window.jQuery', '/js/plugins/jquery-1.7.2.min.js')
-		))
+		));
 	?>
 ```
 
@@ -117,7 +132,7 @@ config/asset-merger.php configuration file has a bunch of settings. Typical conf
 		),
 		'processor' => array(
 			Assets::STYLESHEET => 'cssmin'
-		)
+		);
 	);
 
 __merge__:
