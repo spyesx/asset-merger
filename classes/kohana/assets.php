@@ -126,12 +126,12 @@ abstract class Kohana_Assets {
 	 */
 	public static function instance($name)
 	{
-		if ( ! isset(Assets::$_instance[$location]))
+		if ( ! isset(Assets::$_instance[$name]))
 		{
-			Assets::$_instance[$location] = Assets::factory($location);
+			Assets::$_instance[$name] = Assets::factory($name);
 		}
 
-		return Assets::$_instance[$location];
+		return Assets::$_instance[$name];
 	}
 
 
