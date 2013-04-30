@@ -7,7 +7,7 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset {
+class Asset extends Kohana_Asset{
 
 	/**
 	 * @var  string  type
@@ -52,7 +52,7 @@ class Asset {
 	/**
 	 * @var  int  last modified time
 	 */
-	private $_last_modified = NULL;
+	protected $_last_modified = NULL;
 
 	/**
 	 * Get the source file
