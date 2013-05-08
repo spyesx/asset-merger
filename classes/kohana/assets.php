@@ -43,7 +43,14 @@ abstract class Kohana_Assets {
 	public static function file_path($type, $file)
 	{
 		// Set file
-		$file = substr($file, 0, strrpos($file, $type)).$type;
+		if(substr($file, -5) == '.sass')
+		{
+			$file = substr($file,0, -5).'.'.$type;
+		}
+		else
+		{
+			$file = substr($file, 0, strrpos($file, $type)).$type;
+		}
 
 		return Kohana::$config->load('asset-merger.docroot').Kohana::$config->load('asset-merger.folder').DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$file;
 	}
@@ -58,7 +65,14 @@ abstract class Kohana_Assets {
 	public static function web_path($type, $file)
 	{
 		// Set file
-		$file = substr($file, 0, strrpos($file, $type)).$type;
+		if(substr($file, -5) == '.sass')
+		{
+			$file = substr($file,0, -5).'.'.$type;
+		}
+		else
+		{
+			$file = substr($file, 0, strrpos($file, $type)).$type;
+		}
 
 		return Kohana::$config->load('asset-merger.folder').'/'.$type.'/'.$file;
 	}
@@ -222,7 +236,7 @@ abstract class Kohana_Assets {
 		{
 			if ( ! count($group))
 				continue;
-			
+
 			if ($this->merge())
 			{
 				// Add merged file to html
@@ -233,12 +247,12 @@ abstract class Kohana_Assets {
 				foreach($group as $asset)
 				{
 					// Files not merged, add each of them to html
-					$html[] = $asset->render($this->_process);		
+					$html[] = $asset->render($this->_process);
 				}
 			}
 		}
 
-		foreach ($this->_conditional as $asset) 
+		foreach ($this->_conditional as $asset)
 		{
 			// Add conditional assets
 			$html[] .= Asset::conditional($asset->render($this->_process), $asset->condition());

@@ -154,7 +154,7 @@ class Asset extends Kohana_Asset{
 								$this->source_file      = $modroot.'assets'.DIRECTORY_SEPARATOR.$file;
 
 								// Don't continue
-								//break;
+								break;
 						}
 					}
 				}
@@ -228,14 +228,23 @@ class Asset extends Kohana_Asset{
 
 		if($this->type == 'css')
 		{
-			$this->destination_file = (substr($this->destination_file, -4) == '.css' ? $this->destination_file : $this->destination_file.'.css');
-			$this->destination_web = (substr($this->destination_web, -4) == '.css' ? $this->destination_web : $this->destination_web.'.css');
+			$this->destination_file = (
+						substr($this->destination_file, -4) == '.css'
+						? $this->destination_file//$this->destination_file
+						: $this->destination_file.'.css'
+					);
+
+			$this->destination_web = (
+						substr($this->destination_web, -4) == '.css'
+						? $this->destination_web//$this->destination_web
+						: $this->destination_web.'.css'
+					);
 		}
 
 		if ($this->needs_recompile())
 		{
 			// Recompile file
-			file_put_contents($this->destination_file, $this->compile($process));
+			file_put_contents($this->destination_file, $this->compile($process), FILE_APPEND);
 		}
 
 		return Asset::html($this->type, $this->destination_web, $this->last_modified());

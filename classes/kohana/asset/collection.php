@@ -79,9 +79,16 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 		$this->_type = $type;
 		$this->_name = $name;
 
+		$url_hash = md5(URL::site(Request::initial()->uri()).'?'.http_build_query($_GET, '&'));
 		// Set asset file and web file
-		$this->_destination_file = Assets::file_path($type, $name.'.'.$type);
-		$this->_destination_web  = Assets::web_path($type, $name.'.'.$type);
+		$this->_destination_file = Assets::file_path($type, 'Assets_prod'.DIRECTORY_SEPARATOR.$url_hash.'_'.$name.'.'.$type);
+		$this->_destination_web  = Assets::web_path($type, 'Assets_prod'.DIRECTORY_SEPARATOR.$url_hash.'_'.$name.'.'.$type);
+
+		if ( ! is_dir(dirname($this->_destination_file)))
+		{
+			// Create directory for destination file
+			mkdir(dirname($this->_destination_file), 0777, TRUE);
+		}
 	}
 
 	/**
