@@ -244,7 +244,7 @@ class Asset extends Kohana_Asset{
 		if ($this->needs_recompile())
 		{
 			// Recompile file
-			file_put_contents($this->destination_file, $this->compile($process), FILE_APPEND);
+			file_put_contents($this->destination_file, $this->compile($process));
 		}
 
 		return Asset::html($this->type, $this->destination_web, $this->last_modified());
